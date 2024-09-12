@@ -56,16 +56,14 @@ resource "azurerm_linux_virtual_machine" "example" {
   resource_group_name = azurerm_resource_group.example.name
   location            = azurerm_resource_group.example.location
   size                = "Standard_B1s"
-  admin_username      = "adminuser"
+   admin_username      = "sagarika"
+   admin_password      = "Sagarika@123"
   network_interface_ids = [
     azurerm_network_interface.example.id,
   ]
 
-  admin_ssh_key {
-    username   = "adminuser"
-    public_key = file("/home/weblogic/.ssh/id_rsa.pub")
-  }
 
+  
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
