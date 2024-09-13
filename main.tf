@@ -68,7 +68,7 @@ resource "azurerm_linux_virtual_machine" "example" {
 
   admin_ssh_key {
     username   = "sagarika"
-    public_key = file("/home/weblogic/.ssh/id_rsa.pub")  # Path to your public SSH key
+    public_key = file("/home/weblogic/terraform/id_rsa.pub")  # Path to your public SSH key
   }
 
   os_disk {
