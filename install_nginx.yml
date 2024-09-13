@@ -1,6 +1,6 @@
 ---
-- name: Install Nginx on webservers
-  hosts: webservers
+- name: Install Nginx on all servers
+  hosts: all
   become: yes
   tasks:
     - name: Install Nginx
