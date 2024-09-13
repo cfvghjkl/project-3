@@ -83,13 +83,11 @@ resource "azurerm_linux_virtual_machine" "example" {
     version   = "latest"
   }
 
+  resource "null_resource" "run_ansible_playbook" {
+  depends_on = [azurerm_linux_virtual_machine.example]
+ 
   provisioner "local-exec" {
-    command = <<EOT
-      ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ${azurerm_public_ip.example.ip_address}, -u sagarika -c ssh install_nginx.yml --private-key=/var/lib/jenkins/id_rsa --become --become-user=root
-    EOT
+    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${azurerm_public_ip.demopublicip.ip_address},' playbook.yml --extra-vars='ansible_ssh_user=${var.username}' --private-key='/home/weblogic/.ssh/id_rsa' --become --become-user=root"
   }
 }
 
-output "public_ip" {
-  value = azurerm_public_ip.example.ip_address
-}
