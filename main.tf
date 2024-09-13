@@ -38,7 +38,7 @@ resource "azurerm_public_ip" "example" {
   name                = "example-public-ip"
   location            = azurerm_resource_group.example.location
   resource_group_name = azurerm_resource_group.example.name
-  allocation_method   = "Static"  # Change from Dynamic to Static
+  allocation_method   = "Static"
 }
 
 resource "azurerm_network_interface" "example" {
@@ -68,7 +68,7 @@ resource "azurerm_linux_virtual_machine" "example" {
 
   admin_ssh_key {
     username   = "sagarika"
-    public_key = file("/var/lib/jenkins/id_rsa.pub")  # Path to your public SSH key
+    public_key = file("/var/lib/jenkins/id_rsa.pub")
   }
 
   os_disk {
@@ -82,4 +82,14 @@ resource "azurerm_linux_virtual_machine" "example" {
     sku       = "22_04-lts"
     version   = "latest"
   }
+
+  provisioner "local-exec" {
+    command = <<EOT
+      ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ${self.public_ip_address}, -u sagarika -c ssh /path/to/install_nginx.yml --private-key=/var/lib/jenkins/id_rsa --become --become-user=root
+    EOT
+  }
+}
+
+output "public_ip" {
+  value = azurerm_public_ip.example.ip_address
 }
