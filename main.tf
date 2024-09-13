@@ -85,7 +85,7 @@ resource "azurerm_linux_virtual_machine" "example" {
 
   provisioner "local-exec" {
     command = <<EOT
-      ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ${self.public_ip_address}, -u sagarika -c ssh /path/to/install_nginx.yml --private-key=/var/lib/jenkins/id_rsa --become --become-user=root
+      ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ${self.public_ip_address}, -u sagarika -c ssh install_nginx.yml --private-key=/var/lib/jenkins/id_rsa --become --become-user=root
     EOT
   }
 }
