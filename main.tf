@@ -38,7 +38,7 @@ resource "azurerm_public_ip" "example" {
   name                = "example-public-ip"
   location            = azurerm_resource_group.example.location
   resource_group_name = azurerm_resource_group.example.name
-  allocation_method   = "Dynamic"
+  allocation_method   = "Static"  # Change from Dynamic to Static
 }
 
 resource "azurerm_network_interface" "example" {
@@ -59,14 +59,12 @@ resource "azurerm_linux_virtual_machine" "example" {
   resource_group_name = azurerm_resource_group.example.name
   location            = azurerm_resource_group.example.location
   size                = "Standard_B1s"
-   admin_username      = "sagarika"
-   admin_password      = "Sagarika@123"
+  admin_username      = "sagarika"
+  admin_password      = "Sagarika@123"
   network_interface_ids = [
     azurerm_network_interface.example.id,
   ]
 
-
-  
   os_disk {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
