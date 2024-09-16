@@ -15,56 +15,56 @@ provider "azurerm" {
   features {}
 }
  
-resource "azurerm_resource_group" "resourcegroup1" {
-  name     = "resource_group"
+resource "azurerm_resource_group" "example" {
+  name     = "resource-group1"
   location = "Central India"
 }
- 
-resource "azurerm_virtual_network""virtualnetwork1" {
-  name                = "virtual_network"
+
+resource "azurerm_virtual_network" "example" {
+  name                = "virtual-network"
   address_space       = ["10.0.0.0/16"]
-  location            = azurerm_resource_group.resourcegroup1.location
-  resource_group_name = azurerm_resource_group.resourcegroup1.name
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
 }
- 
-resource "azurerm_subnet" "subnet" {
-  name                 = "Subnet"
-  resource_group_name  = azurerm_resource_group.resourcegroup1.name
-  virtual_network_name = azurerm_virtual_network.virtualnetwork1.name
-  address_prefixes     = ["10.0.0.0/24"]
+
+resource "azurerm_subnet" "example" {
+  name                 = "internal"
+  resource_group_name  = azurerm_resource_group.example.name
+  virtual_network_name = azurerm_virtual_network.example.name
+  address_prefixes     = ["10.0.2.0/24"]
 }
- 
-resource "azurerm_public_ip" "public_ip" {
-  name                = "Public_IP"
-  resource_group_name = azurerm_resource_group.resourcegroup1.name
-  location            = azurerm_resource_group.resourcegroup1.location
+
+resource "azurerm_public_ip" "example" {
+  name                = "example-public-ip"
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
   allocation_method   = "Static"
 }
- 
-resource "azurerm_network_interface" "networkinterface1" {
-  name                = "mynetworkinterface"
-  location            = azurerm_resource_group.resourcegroup1.location
-  resource_group_name = azurerm_resource_group.resourcegroup1.name
- 
+
+resource "azurerm_network_interface" "example" {
+  name                = "example-nic"
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
+
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = azurerm_subnet.subnet.id
+    subnet_id                     = azurerm_subnet.example.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.public_ip.id
+    public_ip_address_id          = azurerm_public_ip.example.id
   }
 }
- 
-resource "azurerm_linux_virtual_machine" "linuxVM" {
-  name                            = "LinuxVM"
-  resource_group_name             = azurerm_resource_group.resourcegroup1.name
-  location                        = azurerm_resource_group.resourcegroup1.location
-  size                            = "Standard_B1s"
-  admin_username                  = "sagarika"
+
+resource "azurerm_linux_virtual_machine" "example" {
+  name                = "VM1"
+  resource_group_name = azurerm_resource_group.example.name
+  location            = azurerm_resource_group.example.location
+  size                = "Standard_B1s"
+  admin_username      = "sagarika"
   disable_password_authentication = true
+
   network_interface_ids = [
-    azurerm_network_interface.networkinterface1.id,
+    azurerm_network_interface.example.id,
   ]
- 
   admin_ssh_key {
     username   = "sagarika"
     public_key = file("/var/lib/jenkins/id_rsa.pub")
@@ -84,9 +84,9 @@ resource "azurerm_linux_virtual_machine" "linuxVM" {
 }
  
 resource "null_resource" "run_ansible_playbook" {
-  depends_on = [azurerm_linux_virtual_machine.linuxVM]
+  depends_on = [azurerm_linux_virtual_machine.example]
  
   provisioner "local-exec" {
-    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${azurerm_public_ip.public_ip.ip_address},' install_nginx.yml --extra-vars='ansible_ssh_user=sagarika' --private-key='/var/lib/jenkins/id_rsa' --become --become-user=root"
+    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${azurerm_public_ip.example.ip_address},' install_nginx.yml --extra-vars='ansible_ssh_user=sagarika' --private-key='/var/lib/jenkins/id_rsa' --become --become-user=root"
   }
 }
