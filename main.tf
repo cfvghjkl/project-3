@@ -85,8 +85,14 @@ resource "azurerm_linux_virtual_machine" "example" {
  
 resource "null_resource" "run_ansible_playbook" {
   depends_on = [azurerm_linux_virtual_machine.example]
- 
+
   provisioner "local-exec" {
-    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${azurerm_public_ip.example.ip_address},' install_nginx.yml --extra-vars='ansible_ssh_user=sagarika' --private-key='/var/lib/jenkins/id_rsa' --become --become-user=root"
+    command = <<EOT
+      ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i '${azurerm_public_ip.example.ip_address},' install_nginx.yml \
+      --extra-vars='ansible_ssh_user=sagarika' \
+      --private-key='/var/lib/jenkins/id_rsa' \
+      --become --become-user=root
+    EOT
   }
 }
+
