@@ -17,7 +17,7 @@ provider "azurerm" {
  
 resource "azurerm_resource_group" "resourcegroup1" {
   name     = "resource_group"
-  location = "East US"
+  location = "Central India"
 }
  
 resource "azurerm_virtual_network""virtualnetwork1" {
