@@ -58,7 +58,7 @@ resource "azurerm_linux_virtual_machine" "linuxVM" {
   name                            = "LinuxVM"
   resource_group_name             = azurerm_resource_group.resourcegroup1.name
   location                        = azurerm_resource_group.resourcegroup1.location
-  size                            = "Standard_D2_V2"
+  size                            = "Standard_B1s"
   admin_username                  = "sagarika"
   disable_password_authentication = true
   network_interface_ids = [
